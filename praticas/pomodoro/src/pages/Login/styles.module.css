@@ -1,0 +1,161 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #121214;
+  font-family: 'Roboto', sans-serif;
+  color: #e1e1e6;
+}
+
+.card {
+  background-color: #202024;
+  padding: 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid #323238;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.card h2 {
+  margin-bottom: 1.5rem;
+  color: #e1e1e6;
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.inputGroup label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #c4c4cc;
+  font-size: 0.875rem;
+}
+
+.inputGroup input {
+  padding: 0.875rem;
+  background-color: #121214;
+  border: 1px solid #323238;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #e1e1e6;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.inputGroup input::placeholder {
+  color: #7c7c8a;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: #8257e5;
+  box-shadow: 0 0 0 1px #8257e5;
+}
+
+.button {
+  padding: 1rem;
+  background-color: #8257e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 0.5rem;
+}
+
+.button:hover {
+  background-color: #9466ff;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid #323238;
+  padding-top: 1.5rem;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: #c4c4cc;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.linkButton:hover {
+  color: #e1e1e6;
+  text-decoration: underline;
+}
+
+.feedback {
+  padding: 0.875rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.success {
+  background-color: #015f43;
+  color: #e1e1e6;
+}
+
+.error {
+  background-color: #aa2834;
+  color: #e1e1e6;
+}
+
+.info {
+  background-color: #323238;
+  color: #e1e1e6;
+}
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.passwordWrapper input {
+  width: 100%;
+  padding-right: 4.5rem;
+  box-sizing: border-box;
+}
+
+.togglePasswordBtn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #8257e5;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.togglePasswordBtn:hover {
+  color: #9466ff;
+}
