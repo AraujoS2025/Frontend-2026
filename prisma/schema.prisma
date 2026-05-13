@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Settings {
+  id             Int @id @default(1)
+  workTime       Int @default(25)
+  shortBreakTime Int @default(5)
+  longBreakTime  Int @default(15)
+}
+
+model Task {
+  id            String   @id
+  name          String
+  duration      Int
+  type          String
+  startDate     Int
+  completeDate  Int?
+  interruptDate Int?
+  createdAt     DateTime @default(now())
+}
