@@ -10,27 +10,27 @@ import { getNextCycleType } from '../../utils/getNextCycleType';
 import { TaskActionTypes } from '../../contexts/TaskContext/taskActions';
 import { Tips } from '../Tips';
 import { showMessage } from '../../adapters/showMessage';
+import { tasksApi } from '../../services/api';
 
 export function MainForm() {
   const { state, dispatch } = useTaskContext();
   const taskNameInput = useRef<HTMLInputElement>(null);
   const lastTaskName = state.tasks[state.tasks.length - 1]?.name || '';
 
-  function handleCreateNewTask(event: React.FormEvent<HTMLFormElement>) {
+  async function handleCreateNewTask(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     showMessage.dismiss();
 
     if (taskNameInput.current === null) return;
 
     const taskName = taskNameInput.current.value.trim();
-
     if (!taskName) {
       showMessage.warn('Digite o nome da tarefa');
       return;
     }
 
     const nextCycle = getNextCycle(state.currentCycle);
-    const nextCyleType = getNextCycleType(nextCycle);
+    const nextCycleType = getNextCycleType(nextCycle);
 
     const newTask: TaskModel = {
       id: Date.now().toString(),
@@ -38,9 +38,22 @@ export function MainForm() {
       startDate: Date.now(),
       completeDate: null,
       interruptDate: null,
-      duration: state.config[nextCyleType],
-      type: nextCyleType,
+      duration: state.config[nextCycleType],
+      type: nextCycleType,
     };
+
+    // Persiste na API (não bloqueia a UI se a API falhar)
+    tasksApi.create({
+      id: newTask.id,
+      name: newTask.name,
+      duration: newTask.duration,
+      type: newTask.type,
+      startDate: newTask.startDate,
+      completeDate: null,
+      interruptDate: null,
+    }).catch(() => {
+      showMessage.warn('API offline — tarefa salva localmente');
+    });
 
     dispatch({ type: TaskActionTypes.START_TASK, payload: newTask });
     showMessage.success('Tarefa iniciada');
@@ -49,6 +62,12 @@ export function MainForm() {
   function handleInterruptTask() {
     showMessage.dismiss();
     showMessage.error('Tarefa interrompida!');
+
+    // Persiste interrupt na API
+    if (state.activeTask) {
+      tasksApi.interrupt(state.activeTask.id, Date.now()).catch(() => {});
+    }
+
     dispatch({ type: TaskActionTypes.INTERRUPT_TASK });
   }
 
@@ -85,7 +104,6 @@ export function MainForm() {
             icon={<PlayCircleIcon />}
           />
         )}
-
         {!!state.activeTask && (
           <DefaultButton
             aria-label='Interromper tarefa atual'

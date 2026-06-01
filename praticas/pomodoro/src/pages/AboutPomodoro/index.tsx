@@ -14,7 +14,7 @@ export function AboutPomodoro() {
     <MainTemplate>
       <Container>
         <GenericHtml>
-          <Heading>A Técnica Pomodoro 🍅</Heading>
+          <Heading>A Técnica Pomodoro </Heading>
 
           <p>
             A Técnica Pomodoro é uma metodologia de produtividade criada por{' '}

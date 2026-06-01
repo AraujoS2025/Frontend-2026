@@ -10,12 +10,12 @@ interface AuthContextType extends AuthState {
   logout: () => void;
 }
 
-type AuthAction = 
-  | { type: 'LOGIN'; payload: string }
-  | { type: 'LOGOUT' };
+type AuthAction = { type: 'LOGIN'; payload: string } | { type: 'LOGOUT' };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+export const AuthContext = createContext<AuthContextType>(
+  {} as AuthContextType,
+);
 
 const initialState: AuthState = {
   isAuthenticated: false,
@@ -37,12 +37,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   const login = (username: string, password: string) => {
-  if (username === 'admin' && password === '1234') {
-    dispatch({ type: 'LOGIN', payload: username });
-    return true;
-  }
-  return false;
-};
+    if (username === 'alex' && password === '1234') {
+      dispatch({ type: 'LOGIN', payload: username });
+      return true;
+    }
+    return false;
+  };
 
   const logout = () => {
     dispatch({ type: 'LOGOUT' });

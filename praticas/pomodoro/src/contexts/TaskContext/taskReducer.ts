@@ -13,7 +13,6 @@ export function taskReducer(
       const newTask = action.payload;
       const nextCycle = getNextCycle(state.currentCycle);
       const secondsRemaining = newTask.duration * 60;
-
       return {
         ...state,
         activeTask: newTask,
@@ -66,8 +65,10 @@ export function taskReducer(
     case TaskActionTypes.CHANGE_SETTINGS: {
       return { ...state, config: { ...action.payload } };
     }
+    case TaskActionTypes.LOAD_TASKS: {
+      return { ...state, tasks: action.payload };
+    }
   }
 
-  // Sempre deve retornar o estado
   return state;
 }

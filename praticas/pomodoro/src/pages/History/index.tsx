@@ -12,20 +12,20 @@ import { sortTasks, type SortTasksOptions } from '../../utils/sortTasks';
 import { useEffect, useState } from 'react';
 import { TaskActionTypes } from '../../contexts/TaskContext/taskActions';
 import { showMessage } from '../../adapters/showMessage';
+import { tasksApi } from '../../services/api';
 
 export function History() {
   const { state, dispatch } = useTaskContext();
   const [confirmClearHistory, setConfirmClearHistory] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const hasTasks = state.tasks.length > 0;
 
   const [sortTasksOptions, setSortTaskOptions] = useState<SortTasksOptions>(
-    () => {
-      return {
-        tasks: sortTasks({ tasks: state.tasks }),
-        field: 'startDate',
-        direction: 'desc',
-      };
-    },
+    () => ({
+      tasks: sortTasks({ tasks: state.tasks }),
+      field: 'startDate',
+      direction: 'desc',
+    }),
   );
 
   useEffect(() => {
@@ -45,21 +45,28 @@ export function History() {
 
   useEffect(() => {
     if (!confirmClearHistory) return;
-
     setConfirmClearHistory(false);
 
-    dispatch({ type: TaskActionTypes.RESET_STATE });
+    setIsLoadingHistory(true);
+    tasksApi.deleteAll()
+      .then(() => {
+        dispatch({ type: TaskActionTypes.RESET_STATE });
+        showMessage.success('Histórico limpo!');
+      })
+      .catch(() => {
+        // Fallback: limpa só localmente
+        dispatch({ type: TaskActionTypes.RESET_STATE });
+        showMessage.warn('API offline — histórico limpo localmente');
+      })
+      .finally(() => setIsLoadingHistory(false));
   }, [confirmClearHistory, dispatch]);
 
   useEffect(() => {
-    return () => {
-      showMessage.dismiss();
-    };
+    return () => { showMessage.dismiss(); };
   }, []);
 
   function handleSortTasks({ field }: Pick<SortTasksOptions, 'field'>) {
     const newDirection = sortTasksOptions.direction === 'desc' ? 'asc' : 'desc';
-
     setSortTaskOptions({
       tasks: sortTasks({
         direction: newDirection,
@@ -89,8 +96,9 @@ export function History() {
                 icon={<TrashIcon />}
                 color='red'
                 aria-label='Apagar todo o histórico'
-                title='Apagar histórico'
+                title={isLoadingHistory ? 'Apagando...' : 'Apagar histórico'}
                 onClick={handleResetHistory}
+                disabled={isLoadingHistory}
               />
             </span>
           )}
@@ -98,34 +106,30 @@ export function History() {
       </Container>
 
       <Container>
-        {hasTasks && (
+        {isLoadingHistory && (
+          <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+            Limpando histórico...
+          </p>
+        )}
+
+        {!isLoadingHistory && hasTasks && (
           <div className={styles.responsiveTable}>
             <table>
               <thead>
                 <tr>
-                  <th
-                    onClick={() => handleSortTasks({ field: 'name' })}
-                    className={styles.thSort}
-                  >
+                  <th onClick={() => handleSortTasks({ field: 'name' })} className={styles.thSort}>
                     Tarefa ↕
                   </th>
-                  <th
-                    onClick={() => handleSortTasks({ field: 'duration' })}
-                    className={styles.thSort}
-                  >
+                  <th onClick={() => handleSortTasks({ field: 'duration' })} className={styles.thSort}>
                     Duração ↕
                   </th>
-                  <th
-                    onClick={() => handleSortTasks({ field: 'startDate' })}
-                    className={styles.thSort}
-                  >
+                  <th onClick={() => handleSortTasks({ field: 'startDate' })} className={styles.thSort}>
                     Data ↕
                   </th>
                   <th>Status</th>
                   <th>Tipo</th>
                 </tr>
               </thead>
-
               <tbody>
                 {sortTasksOptions.tasks.map(task => {
                   const taskTypeDictionary = {
@@ -147,7 +151,8 @@ export function History() {
             </table>
           </div>
         )}
-        {!hasTasks && (
+
+        {!isLoadingHistory && !hasTasks && (
           <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
             Ainda não existem tarefas criadas.
           </p>

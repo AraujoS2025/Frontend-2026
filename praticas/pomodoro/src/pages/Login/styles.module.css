@@ -3,25 +3,32 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #121214;
+  background-color: #0a0a0f;
   font-family: 'Roboto', sans-serif;
-  color: #e1e1e6;
+  color: #f3f4f8;
 }
 
 .card {
-  background-color: #202024;
+  background-color: #161824;
   padding: 2.5rem;
   border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  border: 1px solid #323238;
+  box-shadow: 0 8px 32px rgba(138, 43, 226, 0.25);
+  border: 1px solid #34384d;
   width: 100%;
   max-width: 400px;
   text-align: center;
 }
 
+.cardTitle {
+  margin-bottom: 1.5rem;
+  color: #8a2be2;
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+
 .card h2 {
   margin-bottom: 1.5rem;
-  color: #e1e1e6;
+  color: #f3f4f8;
   font-size: 1.75rem;
   font-weight: bold;
 }
@@ -47,11 +54,11 @@
 
 .inputGroup input {
   padding: 0.875rem;
-  background-color: #121214;
-  border: 1px solid #323238;
+  background-color: #0d1120;
+  border: 1px solid #34384d;
   border-radius: 6px;
   font-size: 1rem;
-  color: #e1e1e6;
+  color: #f3f4f8;
   transition:
     border-color 0.2s,
     box-shadow 0.2s;
@@ -63,13 +70,13 @@
 
 .inputGroup input:focus {
   outline: none;
-  border-color: #8257e5;
-  box-shadow: 0 0 0 1px #8257e5;
+  border-color: #8a2be2;
+  box-shadow: 0 0 0 1px #8a2be2;
 }
 
 .button {
   padding: 1rem;
-  background-color: #8257e5;
+  background-color: #8a2be2;
   color: white;
   border: none;
   border-radius: 6px;
@@ -81,7 +88,7 @@
 }
 
 .button:hover {
-  background-color: #9466ff;
+  background-color: #5f0db4;
 }
 
 .actions {
@@ -89,21 +96,21 @@
   flex-direction: column;
   gap: 0.75rem;
   margin-top: 1.5rem;
-  border-top: 1px solid #323238;
+  border-top: 1px solid #34384d;
   padding-top: 1.5rem;
 }
 
 .linkButton {
   background: none;
   border: none;
-  color: #c4c4cc;
+  color: #a970ff;
   cursor: pointer;
   font-size: 0.875rem;
   transition: color 0.2s;
 }
 
 .linkButton:hover {
-  color: #e1e1e6;
+  color: #c299ff;
   text-decoration: underline;
 }
 
@@ -115,18 +122,18 @@
 }
 
 .success {
-  background-color: #015f43;
-  color: #e1e1e6;
+  background-color: #2f855a;
+  color: white;
 }
 
 .error {
-  background-color: #aa2834;
-  color: #e1e1e6;
+  background-color: #c53030;
+  color: white;
 }
 
 .info {
-  background-color: #323238;
-  color: #e1e1e6;
+  background-color: #34384d;
+  color: #f3f4f8;
 }
 
 .passwordWrapper {
@@ -148,7 +155,7 @@
   transform: translateY(-50%);
   background: transparent;
   border: none;
-  color: #8257e5;
+  color: #8a2be2;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -157,5 +164,5 @@
 }
 
 .togglePasswordBtn:hover {
-  color: #9466ff;
+  color: #c299ff;
 }
