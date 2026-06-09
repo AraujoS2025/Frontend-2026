@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef, FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, FormEvent } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
-import { loginUser } from '../../services/authService'
+import { registerUser } from '../../services/authService'
+import { useNavigate } from 'react-router-dom'
 import styles from '../auth.module.css'
 
 type Props = {
-  onGoToRegister: () => void
-  onGoToForgot: () => void
+  onGoToLogin: () => void
 }
 
-export function LoginPage({ onGoToRegister, onGoToForgot }: Props) {
+export function RegisterPage({ onGoToLogin }: Props) {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -17,29 +17,29 @@ export function LoginPage({ onGoToRegister, onGoToForgot }: Props) {
 
   const { saveSession } = useAuth()
   const navigate = useNavigate()
-  const emailRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    emailRef.current?.focus()
-  }, [])
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
 
-    if (!email.trim() || !password.trim()) {
-      setError('Preencha e-mail e senha.')
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      setError('Preencha todos os campos.')
+      return
+    }
+
+    if (password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres.')
       return
     }
 
     setIsLoading(true)
 
     try {
-      const { token, user } = await loginUser(email, password)
+      const { token, user } = await registerUser(name, email, password)
       saveSession(token, user)
       navigate('/home')
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Erro ao realizar login.')
+      setError(err instanceof Error ? err.message : 'Erro ao cadastrar.')
     } finally {
       setIsLoading(false)
     }
@@ -50,7 +50,7 @@ export function LoginPage({ onGoToRegister, onGoToForgot }: Props) {
       <div className={styles.card}>
         <div className={styles.logo}>
           <h1>⏱ Chronos</h1>
-          <p>Gerencie seu tempo com foco</p>
+          <p>Crie sua conta</p>
         </div>
 
         {error && (
@@ -59,9 +59,20 @@ export function LoginPage({ onGoToRegister, onGoToForgot }: Props) {
 
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
           <div className={styles.field}>
+            <label htmlFor="name">Nome</label>
+            <input
+              id="name"
+              type="text"
+              placeholder="Seu nome"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              autoComplete="name"
+            />
+          </div>
+
+          <div className={styles.field}>
             <label htmlFor="email">E-mail</label>
             <input
-              ref={emailRef}
               id="email"
               type="email"
               placeholder="seu@email.com"
@@ -76,23 +87,20 @@ export function LoginPage({ onGoToRegister, onGoToForgot }: Props) {
             <input
               id="password"
               type="password"
-              placeholder="Sua senha"
+              placeholder="Mínimo 6 caracteres"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              autoComplete="current-password"
+              autoComplete="new-password"
             />
           </div>
 
           <button type="submit" className={styles.submitButton} disabled={isLoading}>
-            {isLoading ? 'Entrando...' : 'Entrar'}
+            {isLoading ? 'Cadastrando...' : 'Criar conta'}
           </button>
 
           <div className={styles.links}>
-            <button type="button" className={styles.linkButton} onClick={onGoToForgot}>
-              Esqueci minha senha
-            </button>
-            <button type="button" className={styles.linkButton} onClick={onGoToRegister}>
-              Não tem conta? Cadastre-se
+            <button type="button" className={styles.linkButton} onClick={onGoToLogin}>
+              Já tem conta? Faça login
             </button>
           </div>
         </form>

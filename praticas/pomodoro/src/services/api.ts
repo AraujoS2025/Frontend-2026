@@ -1,28 +1,30 @@
 // Centraliza todas as chamadas à pomodoro-api
-const BASE_URL = 'http://localhost:3333';
+const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3333';
 
-async function request<T>(
-  path: string,
-  options?: RequestInit,
-): Promise<T> {
+function getToken() {
+  return sessionStorage.getItem('token');
+}
+
+async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const token = getToken();
   const response = await fetch(`${BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     ...options,
   });
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
-    throw new Error((body as { message?: string }).message ?? `Erro ${response.status}`);
+    throw new Error((body as { message?: string; error?: string }).error ?? (body as { message?: string }).message ?? `Erro ${response.status}`);
   }
 
-  // 204 No Content não tem body
   if (response.status === 204) return undefined as T;
-
   return response.json() as Promise<T>;
 }
 
 // ─── Settings ──────────────────────────────────────────────────────────────
-
 export type ApiSettings = {
   id: number;
   workTime: number;
@@ -33,7 +35,6 @@ export type ApiSettings = {
 
 export const settingsApi = {
   get: () => request<ApiSettings>('/settings'),
-
   put: (data: Omit<ApiSettings, 'id' | 'updatedAt'>) =>
     request<ApiSettings>('/settings', {
       method: 'PUT',
@@ -42,7 +43,6 @@ export const settingsApi = {
 };
 
 // ─── Tasks ─────────────────────────────────────────────────────────────────
-
 export type ApiTask = {
   id: string;
   name: string;
@@ -56,24 +56,20 @@ export type ApiTask = {
 
 export const tasksApi = {
   list: () => request<ApiTask[]>('/tasks'),
-
   create: (data: Omit<ApiTask, 'createdAt'>) =>
     request<ApiTask>('/tasks', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-
   complete: (id: string, completeDate: number) =>
     request<ApiTask>(`/tasks/${id}/complete`, {
       method: 'PATCH',
       body: JSON.stringify({ completeDate }),
     }),
-
   interrupt: (id: string, interruptDate: number) =>
     request<ApiTask>(`/tasks/${id}/interrupt`, {
       method: 'PATCH',
       body: JSON.stringify({ interruptDate }),
     }),
-
   deleteAll: () => request<void>('/tasks', { method: 'DELETE' }),
 };
