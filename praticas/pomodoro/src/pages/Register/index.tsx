@@ -37,7 +37,7 @@ export function RegisterPage({ onGoToLogin }: Props) {
     try {
       const { token, user } = await registerUser(name, email, password)
       saveSession(token, user)
-      navigate('/home')
+      navigate('/')
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erro ao cadastrar.')
     } finally {

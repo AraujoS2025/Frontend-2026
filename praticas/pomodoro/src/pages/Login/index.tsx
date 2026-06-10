@@ -37,7 +37,7 @@ export function LoginPage({ onGoToRegister, onGoToForgot }: Props) {
     try {
       const { token, user } = await loginUser(email, password)
       saveSession(token, user)
-      navigate('/home')
+      navigate('/')
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erro ao realizar login.')
     } finally {

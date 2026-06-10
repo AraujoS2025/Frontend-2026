@@ -16,6 +16,7 @@ import { tasksApi } from '../../services/api';
 
 export function History() {
   const { state, dispatch } = useTaskContext();
+  console.log('Tasks:', state.tasks);
   const [confirmClearHistory, setConfirmClearHistory] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const hasTasks = state.tasks.length > 0;
@@ -141,7 +142,11 @@ export function History() {
                     <tr key={task.id}>
                       <td>{task.name}</td>
                       <td>{task.duration}min</td>
-                      <td>{formatDate(task.startDate)}</td>
+                      <td>
+  {task.startDate
+    ? formatDate(task.startDate)
+    : 'Data inválida'}
+</td>
                       <td>{getTaskStatus(task, state.activeTask)}</td>
                       <td>{taskTypeDictionary[task.type]}</td>
                     </tr>
